@@ -1,0 +1,3322 @@
+openapi: 3.0.3
+
+info:
+  title: Inventory API
+  description: |-
+    A demo inventory management system.
+  version: 2.0.0
+
+servers:
+  - url: https://inventory-api.igraphql.co/api/v2
+    description: Microservice
+
+tags:
+  - name: Assets
+  - name: Description
+  - name: Inventory
+  - name: Price
+  - name: Products
+  - name: Rating
+  - name: Reviews
+  - name: SKUs
+  - name: Stores
+
+paths:
+  /assets/{skuId}:
+    post:
+      tags:
+        - Assets
+      description: Creates a product's assets.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAssets'
+      responses:
+        "201":
+          description: Asset(s) successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode201"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: SKU not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "409":
+          description: Asset(s) already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode409"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    get:
+      tags:
+        - Assets
+      description: Retrieves a product's assets.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - $ref: '#/components/parameters/AssetID'
+        - $ref: '#/components/parameters/Field'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Tag'
+        - $ref: '#/components/parameters/URL'
+      responses:
+        "200":
+          description: Asset(s) successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAssets"
+        "404":
+          description: Asset(s) or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    put:
+      tags:
+        - Assets
+      description: Updates a product's assets.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAssets'
+      responses:
+        "200":
+          description: Assets successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: Asset(s) or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Assets
+      description: Deletes a product's assets.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      responses:
+        "200":
+          description: Assets successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: SKU not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /assets/{skuId}/{assetId}:
+    get:
+      tags:
+        - Assets
+      description: Retrieves a product asset.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - name: assetId
+          in: path
+          description: Asset ID.
+          required: true
+          schema:
+            type: integer
+            example: 14
+        - $ref: '#/components/parameters/Field'
+      responses:
+        "200":
+          description: Asset successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAsset"
+        "404":
+          description: Asset or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    put:
+      tags:
+        - Assets
+      description: Updates a product asset.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - name: assetId
+          in: path
+          description: Asset ID.
+          required: true
+          schema:
+            type: integer
+            example: 14
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAsset'
+      responses:
+        "200":
+          description: Asset successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: Asset or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Assets
+      description: Deletes a product asset.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - name: assetId
+          in: path
+          description: Asset ID.
+          required: true
+          schema:
+            type: integer
+            example: 14
+      responses:
+        "200":
+          description: Asset successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: Asset or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /description:
+    get:
+      tags:
+        - Description
+      description: Retrieves product SKUs with filtering.
+      parameters:
+        - $ref: '#/components/parameters/Brand'
+        - $ref: '#/components/parameters/Country'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/NameProduct'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Region'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/SkuId'
+        - $ref: '#/components/parameters/Style'
+        - $ref: '#/components/parameters/SummaryProduct'
+        - $ref: '#/components/parameters/Type'
+        - $ref: '#/components/parameters/Units'
+      responses:
+        "200":
+          description: SKU(s) successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSkus"
+        "404":
+          description: SKU(s) not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /description/{skuId}:
+    post:
+      tags:
+        - Description
+      description: Creates a product description.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDescription'
+      responses:
+        "201":
+          description: Description successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode201"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: SKU not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "409":
+          description: Description already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode409"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    get:
+      tags:
+        - Description
+      description: Retrieves a product description.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - $ref: '#/components/parameters/Field'
+      responses:
+        "200":
+          description: Description successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDescription"
+        "404":
+          description: Description or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    put:
+      tags:
+        - Description
+      description: Updates a product description.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDescription'
+      responses:
+        "200":
+          description: Description successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: Description or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Description
+      description: Deletes a product description.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      responses:
+        "200":
+          description: Description successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: Description or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /inventory/{skuId}:
+    post:
+      tags:
+        - Inventory
+      description: Creates product inventory in bulk.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInventories'
+      responses:
+        "201":
+          description: Inventory successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode201"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: SKU not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "409":
+          description: Inventory already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode409"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    get:
+      tags:
+        - Inventory
+      description: Retrieves a product's inventory in bulk.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - $ref: '#/components/parameters/Address'
+        - $ref: '#/components/parameters/City'
+        - $ref: '#/components/parameters/Field'
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Longitude'
+        - $ref: '#/components/parameters/NameStore'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Quantity'
+        - $ref: '#/components/parameters/State'
+        - $ref: '#/components/parameters/StoreID'
+        - $ref: '#/components/parameters/ZipCode'
+      responses:
+        "200":
+          description: Inventory successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetInventories"
+        "404":
+          description: Inventory nor SKU ot found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    put:
+      tags:
+        - Inventory
+      description: Updates a product's inventory in bulk.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInventories'
+      responses:
+        "200":
+          description: Inventory successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: Inventory or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Inventory
+      description: Deletes product inventory in bulk.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      responses:
+        "200":
+          description: Inventory successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: Inventory or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /inventory/{skuId}/{storeId}:
+    post:
+      tags:
+        - Inventory
+      description: Creates product inventory by store.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - name: storeId
+          in: path
+          description: Store ID.
+          required: true
+          schema:
+            type: integer
+            example: 6602
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInventory'
+      responses:
+        "201":
+          description: Inventory successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode201"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: SKU or store not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "409":
+          description: Inventory already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode409"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    get:
+      tags:
+        - Inventory
+      description: Retrieves a product's inventory by store.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - name: storeId
+          in: path
+          description: Store ID.
+          required: true
+          schema:
+            type: integer
+            example: 6602
+        - $ref: '#/components/parameters/Field'
+      responses:
+        "200":
+          description: Inventory successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetInventory"
+        "404":
+          description: Inventory, SKU, or store not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    put:
+      tags:
+        - Inventory
+      description: Updates a product's inventory by store.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - name: storeId
+          in: path
+          description: Store ID.
+          required: true
+          schema:
+            type: integer
+            example: 6602
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInventory'
+      responses:
+        "200":
+          description: Inventory successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: Inventory, SKU, or store not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Inventory
+      description: Deletes product inventory by store.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - name: storeId
+          in: path
+          description: Store ID.
+          required: true
+          schema:
+            type: integer
+            example: 6602
+      responses:
+        "200":
+          description: Inventory successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: Inventory, SKU, or store not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /inventory/store/{storeId}:
+    delete:
+      tags:
+        - Inventory
+      description: Deletes a store's inventory.
+      parameters:
+        - name: storeId
+          in: path
+          description: Store ID.
+          required: true
+          schema:
+            type: integer
+            example: 6602
+      responses:
+        "200":
+          description: Inventory successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: Store not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /price/{skuId}:
+    post:
+      tags:
+        - Price
+      description: Creates a product price.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePrice'
+      responses:
+        "201":
+          description: Price successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode201"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: SKU not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "409":
+          description: Price already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode409"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    get:
+      tags:
+        - Price
+      description: Retrieves a product price.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - $ref: '#/components/parameters/Field'
+      responses:
+        "200":
+          description: Price successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetPrice"
+        "404":
+          description: Price or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    put:
+      tags:
+        - Price
+      description: Updates a product price.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePrice'
+      responses:
+        "200":
+          description: Price successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: Price or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Price
+      description: Deletes a product price.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      responses:
+        "200":
+          description: Price successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: Price or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /products/{skuId}:
+    post:
+      tags:
+        - Products
+      description: Creates a product.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProduct'
+      responses:
+        "201":
+          description: Product successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode201"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: SKU not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "409":
+          description: Product already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode409"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    get:
+      tags:
+        - Products
+      description: Retrieves a product.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - $ref: '#/components/parameters/Field'
+      responses:
+        "200":
+          description: Product successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetProduct"
+        "404":
+          description: Product or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    put:
+      tags:
+        - Products
+      description: Updates a product.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProduct'
+      responses:
+        "200":
+          description: Product successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: Product or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Products
+      description: Deletes a product.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      responses:
+        "200":
+          description: Product successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: Product or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /rating/{skuId}:
+    post:
+      tags:
+        - Rating
+      description: Creates a product rating.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRating'
+      responses:
+        "201":
+          description: Rating successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode201"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "409":
+          description: Rating already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode409"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    get:
+      tags:
+        - Rating
+      description: Retrieves a product rating.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - $ref: '#/components/parameters/Field'
+      responses:
+        "200":
+          description: Rating successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetRating"
+        "404":
+          description: Rating or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    put:
+      tags:
+        - Rating
+      description: Updates a product rating.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRating'
+      responses:
+        "200":
+          description: Rating successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: Rating or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Rating
+      description: Deletes a product rating.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      responses:
+        "200":
+          description: Rating successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: Rating or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /reviews/{skuId}:
+    post:
+      tags:
+        - Reviews
+      description: Creates a product review.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReview'
+      responses:
+        "201":
+          description: Review successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode201"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "409":
+          description: Review already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode409"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    get:
+      tags:
+        - Reviews
+      description: Retrieves a product's reviews.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - $ref: '#/components/parameters/Author'
+        - $ref: '#/components/parameters/Field'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/ReviewID'
+        - $ref: '#/components/parameters/Score'
+        - $ref: '#/components/parameters/SummaryReview'
+        - $ref: '#/components/parameters/UserID'
+      responses:
+        "200":
+          description: Review(s) successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetReviews"
+        "404":
+          description: Review(s) or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Reviews
+      description: Deletes a product's reviews
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      responses:
+        "200":
+          description: Review(s) successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /reviews/{skuId}/{reviewId}:
+    get:
+      tags:
+        - Reviews
+      description: Retrieves a product review.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - name: reviewId
+          in: path
+          description: Review ID.
+          required: true
+          schema:
+            type: integer
+            example: 2
+        - $ref: '#/components/parameters/Field'
+      responses:
+        "200":
+          description: Review successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetReview"
+        "404":
+          description: Review or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    put:
+      tags:
+        - Reviews
+      description: Updates a product review.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - name: reviewId
+          in: path
+          description: Review ID.
+          required: true
+          schema:
+            type: integer
+            example: 2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReview'
+      responses:
+        "200":
+          description: Review successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: Review or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Reviews
+      description: Deletes a product review.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - name: reviewId
+          in: path
+          description: Review ID.
+          required: true
+          schema:
+            type: integer
+            example: 2
+      responses:
+        "200":
+          description: Review successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: Review or SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /skus:
+    get:
+      tags:
+        - SKUs
+      description: Retrieves product SKUs.
+      parameters:
+        - $ref: '#/components/parameters/Brand'
+        - $ref: '#/components/parameters/Country'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/NameProduct'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Region'
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/SkuId'
+        - $ref: '#/components/parameters/Style'
+        - $ref: '#/components/parameters/SummaryProduct'
+        - $ref: '#/components/parameters/Type'
+        - $ref: '#/components/parameters/Units'
+      responses:
+        "200":
+          description: SKU(s) successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSkus"
+        "404":
+          description: SKU not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /skus/{skuId}:
+    post:
+      tags:
+        - SKUs
+      description: Creates a product SKU.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      responses:
+        "201":
+          description: SKU successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode201"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "409":
+          description: SKU already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode409"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    get:
+      tags:
+        - SKUs
+      description: Retrieves a product SKU.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+        - $ref: '#/components/parameters/Field'
+      responses:
+        "200":
+          description: SKU successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSku"
+        "404":
+          description: SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - SKUs
+      description: Deletes a product SKU.
+      parameters:
+        - name: skuId
+          in: path
+          description: Product SKU.
+          required: true
+          schema:
+            type: integer
+            example: 96070
+      responses:
+        "200":
+          description: SKU successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: SKU not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /stores:
+    get:
+      tags:
+        - Stores
+      description: Retrieves stores.
+      parameters:
+        - $ref: '#/components/parameters/Address'
+        - $ref: '#/components/parameters/City'
+        - $ref: '#/components/parameters/Field'
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Longitude'
+        - $ref: '#/components/parameters/NameStore'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/State'
+        - $ref: '#/components/parameters/StoreID'
+        - $ref: '#/components/parameters/ZipCode'
+      responses:
+        "200":
+          description: Store(s) successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStores"
+        "404":
+          description: Store(s) not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+  
+  /stores/{storeId}:
+    post:
+      tags:
+        - Stores
+      description: Creates a store.
+      parameters:
+        - name: storeId
+          in: path
+          description: Store ID.
+          required: true
+          schema:
+            type: integer
+            example: 3025
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStore'
+      responses:
+        "201":
+          description: Store successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode201"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "409":
+          description: Store already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode409"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    get:
+      tags:
+        - Stores
+      description: Retrieves a store.
+      parameters:
+        - name: storeId
+          in: path
+          description: Store ID.
+          required: true
+          schema:
+            type: integer
+            example: 3025
+        - $ref: '#/components/parameters/Field'
+      responses:
+        "200":
+          description: Store successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetStore"
+        "404":
+          description: Store not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    put:
+      tags:
+        - Stores
+      description: Updates a store.
+      parameters:
+        - name: storeId
+          in: path
+          description: Store ID.
+          required: true
+          schema:
+            type: integer
+            example: 3025
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStore'
+      responses:
+        "200":
+          description: Store successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "400":
+          description: Client sent an invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode400"
+        "404":
+          description: Store not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "415":
+          description: Invalid Content-Type.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode415"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+    delete:
+      tags:
+        - Stores
+      description: Deletes a store.
+      parameters:
+        - name: storeId
+          in: path
+          description: Store ID.
+          required: true
+          schema:
+            type: integer
+            example: 3025
+      responses:
+        "200":
+          description: Store successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode200"
+        "404":
+          description: Store not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode404"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpCode500"
+
+components:
+  parameters:
+    Address:
+      name: address
+      in: query
+      description: Store address.
+      schema:
+        type: string
+    Author:
+      name: author
+      in: query
+      description: Review author.
+      schema:
+        type: string
+    AssetID:
+      name: asset_id
+      in: query
+      description: Asset ID.
+      schema:
+        type: integer
+    Brand:
+      name: brand
+      in: query
+      description: Product brand.
+      schema:
+        type: string
+    City:
+      name: city
+      in: query
+      description: Store city.
+      schema:
+        type: string
+    Count:
+      name: count
+      in: query
+      description: Number of reviews.
+      schema:
+        type: integer
+    Country:
+      name: country
+      in: query
+      description: Product country of origin.
+      schema:
+        type: string
+    Field:
+      name: field
+      in: query
+      description: Limit the fields returned by the query. Can be specified multiple times.
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: true
+    Latitude:
+      name: latitude
+      in: query
+      description: Store latitude.
+      schema:
+        type: number
+    Limit:
+      name: limit
+      in: query
+      description: Limit the number of values returned by the query.
+      schema:
+        type: integer
+    Longitude:
+      name: longitude
+      in: query
+      description: Store longitude.
+      schema:
+        type: number
+    NameProduct:
+      name: name
+      in: query
+      description: Product name.
+      schema:
+        type: string
+    NameStore:
+      name: name
+      in: query
+      description: Store name.
+      schema:
+        type: string
+    Offset:
+      name: offset
+      in: query
+      description: Offset the number of values returned by the query.
+      schema:
+        type: integer
+    Quantity:
+      name: quantity
+      in: query
+      description: Product quantity.
+      schema:
+        type: integer
+    Region:
+      name: region
+      in: query
+      description: Product region of origin.
+      schema:
+        type: string
+    ReviewID:
+      name: review_id
+      in: query
+      description: Review ID.
+      schema:
+        type: integer
+    Score:
+      name: score
+      in: query
+      description: Review score.
+      schema:
+        type: number
+    Size:
+      name: size
+      in: query
+      description: Product size.
+      schema:
+        type: number
+    SkuId:
+      name: sku_id
+      in: query
+      description: Product SKU ID.
+      schema:
+        type: integer
+    State:
+      name: state
+      in: query
+      description: Store state.
+      schema:
+        type: string
+    StoreID:
+      name: store_id
+      in: query
+      description: Store ID.
+      schema:
+        type: integer
+    Style:
+      name: style
+      in: query
+      description: Product style.
+      schema:
+        type: string
+    SummaryProduct:
+      name: summary
+      in: query
+      description: Product summary.
+      schema:
+        type: string
+    SummaryReview:
+      name: summary
+      in: query
+      description: Review summary.
+      schema:
+        type: string
+    Tag:
+      name: tag
+      in: query
+      description: Asset tag.
+      schema:
+        type: string
+    Type:
+      name: type
+      in: query
+      description: Product type.
+      schema:
+        type: string
+    Units:
+      name: units
+      in: query
+      description: Product unit of measurement (e.g. mL or L).
+      schema:
+        type: string
+    URL:
+      name: url
+      in: query
+      description: Asset URL
+      schema:
+        type: string
+    UserID:
+      name: user_id
+      in: query
+      description: Review User ID.
+      schema:
+        type: string
+    ZipCode:
+      name: zip_code
+      in: query
+      description: Store zip code.
+      schema:
+        type: integer
+  schemas:
+    CreateAssets:
+      type: array
+      items:
+        type: object
+        required:
+          - tag
+          - url
+        properties:
+          tag:
+            type: string
+            example: thumbnail
+          url:
+            type: string
+            example: /images/assets/96070.png
+    GetAsset:
+      type: object
+      properties:
+        asset_id:
+          type: integer
+          example: 14
+        created:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        sku_id:
+          type: integer
+          example: 96070
+        tag:
+          type: string
+          example: thumbnail
+        updated:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        url:
+          type: string
+          example: /images/assets/96070.png
+    GetAssets:
+      type: array
+      items:
+        type: object
+        properties:
+          asset_id:
+            type: integer
+            example: 14
+          created:
+            type: string
+            example: 2023-07-04T12:00:00.00.000Z
+          sku_id:
+            type: integer
+            example: 96070
+          tag:
+            type: string
+            example: thumbnail
+          updated:
+            type: string
+            example: 2023-07-04T12:00:00.00.000Z
+          url:
+            type: string
+            example: /images/assets/96070.png
+    UpdateAsset:
+      type: object
+      properties:
+        tag:
+          type: string
+          example: thumbnail
+        url:
+          type: string
+          example: /images/assets/96070.png
+    UpdateAssets:
+      type: array
+      items:
+        type: object
+        required:
+          - asset_id
+        properties:
+          asset_id:
+            type: integer
+            example: 14
+          tag:
+            type: string
+            example: thumbnail
+          url:
+            type: string
+            example: /images/assets/96070.png
+    CreateDescription:
+      type: object
+      required:
+        - brand
+        - country
+        - name
+        - region
+        - size
+        - summary
+        - type
+        - units
+      properties:
+        brand:
+          type: string
+          example: Chauteau Montelena Winery
+        country:
+          type: string
+          example: USA
+        name:
+          type: string
+          example: Chateau Montelena Napa Valley Chardonnay (750 mL)
+        region:
+          type: string
+          example: California
+        size:
+          type: number
+          example: 750
+        style:
+          type: string
+          example: null
+        summary:
+          type: string
+          example: Bright, focused and tightly wound, with tons of citrus peel, orchard fruit and floral notes; terrific energy on the palate with a very long and classy finish. This item is available for Gift Wrap.
+        type:
+          type: string
+          example: Chardonnay
+        units:
+          type: string
+          example: mL
+    GetDescription:
+      type: object
+      properties:
+        brand:
+          type: string
+          example: Chauteau Montelena Winery
+        country:
+          type: string
+          example: USA
+        created:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        name:
+          type: string
+          example: Chateau Montelena Napa Valley Chardonnay (750 mL)
+        region:
+          type: string
+          example: California
+        size:
+          type: number
+          example: 750
+        sku_id:
+          type: integer
+          example: 96070
+        style:
+          type: string
+          example: null
+        summary:
+          type: string
+          example: Bright, focused and tightly wound, with tons of citrus peel, orchard fruit and floral notes; terrific energy on the palate with a very long and classy finish. This item is available for Gift Wrap.
+        type:
+          type: string
+          example: Chardonnay
+        units:
+          type: string
+          example: mL
+        updated:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+    UpdateDescription:
+      type: object
+      properties:
+        brand:
+          type: string
+          example: Chauteau Montelena Winery
+        country:
+          type: string
+          example: USA
+        name:
+          type: string
+          example: Chateau Montelena Napa Valley Chardonnay (750 mL)
+        region:
+          type: string
+          example: California
+        size:
+          type: number
+          example: 750
+        style:
+          type: string
+          example: null
+        summary:
+          type: string
+          example: Bright, focused and tightly wound, with tons of citrus peel, orchard fruit and floral notes; terrific energy on the palate with a very long and classy finish. This item is available for Gift Wrap.
+        type:
+          type: string
+          example: Chardonnay
+        units:
+          type: string
+          example: mL
+    CreateInventories:
+      type: array
+      items:
+        type: object
+        required:
+          - quantity
+          - sku_id
+        properties:
+          quantity:
+            type: integer
+            example: 5
+          sku_id:
+            type: integer
+            example: 6602
+    CreateInventory:
+      type: object
+      required:
+        - quantity
+      properties:
+        quantity:
+          type: integer
+          example: 5
+    GetInventories:
+      type: array
+      items:
+        type: object
+        properties:
+          created:
+            type: string
+            example: 2023-07-04T12:00:00.00.000Z
+          quantity:
+            type: integer
+            example: 5
+          sku_id:
+            type: integer
+            example: 96070
+          store:
+            type: object
+            properties:
+              address:
+                type: string
+                example: 636 Blossom Hill Road
+              city:
+                type: string
+                example: Los Gatos
+              created:
+                type: string
+                example: 2023-07-04T12:00:00.00.000Z
+              latitude:
+                type: number
+                example: 37.235477
+              longitude:
+                type: number
+                example: -121.964020
+              name:
+                type: string
+                example: Los Gatos
+              state:
+                type: string
+                example: CA
+              store_id:
+                type: integer
+                example: 6602
+              updated:
+                type: string
+                example: 2023-07-04T12:00:00.00.000Z
+              zip_code:
+                type: integer
+                example: 95032
+          updated:
+            type: string
+            example: 2023-07-04T12:00:00.00.000Z
+    GetInventory:
+      type: object
+      properties:
+        created:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        quantity:
+          type: integer
+          example: 5
+        sku_id:
+          type: integer
+          example: 96070
+        store:
+          type: object
+          properties:
+            address:
+              type: string
+              example: 636 Blossom Hill Road
+            city:
+              type: string
+              example: Los Gatos
+            created:
+              type: string
+              example: 2023-07-04T12:00:00.00.000Z
+            latitude:
+              type: number
+              example: 37.235477
+            longitude:
+              type: number
+              example: -121.964020
+            name:
+              type: string
+              example: Los Gatos
+            state:
+              type: string
+              example: CA
+            store_id:
+              type: integer
+              example: 6602
+            updated:
+              type: string
+              example: 2023-07-04T12:00:00.00.000Z
+            zip_code:
+              type: integer
+              example: 95032
+        updated:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+    UpdateInventories:
+      type: array
+      items:
+        type: object
+        required:
+          - quantity
+          - store_id
+        properties:
+          quantity:
+            type: integer
+            example: 5
+          store_id:
+            type: integer
+            example: 6602
+    UpdateInventory:
+      type: object
+      required:
+        - quantity
+      properties:
+        quantity:
+          type: integer
+          example: 5
+    CreatePrice:
+      type: object
+      required:
+        - retail
+        - sale
+      properties:
+        retail:
+          type: number
+          example: 84.99
+        sale:
+          type: number
+          example: null
+    GetPrice:
+      type: object
+      properties:
+        created:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        retail:
+          type: number
+          example: 84.99
+        sale:
+          type: number
+          example: null
+        sku_id:
+          type: integer
+          example: 96070
+        updated:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+    UpdatePrice:
+      type: object
+      properties:
+        retail:
+          type: number
+          example: 84.99
+        sale:
+          type: number
+          example: null
+    CreateProduct:
+      type: object
+      required:
+        - assets
+        - description
+        - inventory
+        - price
+        - rating
+      properties:
+        assets:
+          type: array
+          items:
+            type: object
+            required:
+              - tag
+              - url
+            properties:
+              tag:
+                type: string
+                example: thumbnail
+              url:
+                type: string
+                example: /images/assets/96070.png
+        description:
+          type: object
+          required:
+            - brand
+            - country
+            - name
+            - region
+            - size
+            - summary
+            - type
+            - units
+          properties:
+            brand:
+              type: string
+              example: Chauteau Montelena Winery
+            country:
+              type: string
+              example: USA
+            name:
+              type: string
+              example: Chateau Montelena Napa Valley Chardonnay (750 mL)
+            region:
+              type: string
+              example: California
+            size:
+              type: number
+              example: 750
+            style:
+              type: string
+              example: null
+            summary:
+              type: string
+              example: Bright, focused and tightly wound, with tons of citrus peel, orchard fruit and floral notes; terrific energy on the palate with a very long and classy finish. This item is available for Gift Wrap.
+            type:
+              type: string
+              example: Chardonnay
+            units:
+              type: string
+              example: mL
+        inventory:
+          type: array
+          items:
+            type: object
+            required:
+              - quantity
+              - store_id
+            properties:
+              quantity:
+                type: integer
+                example: 5
+              store_id:
+                type: integer
+                example: 6602
+        price:
+          type: object
+          required:
+            - retail
+            - sale
+          properties:
+            retail:
+              type: number
+              example: 84.99
+            sale:
+              type: number
+              example: null
+        rating:
+          type: object
+          required:
+            - count
+            - score
+          properties:
+            count:
+              type: integer
+              example: 0
+            score:
+              type: number
+              example: 0
+    GetProduct:
+      type: object
+      properties:
+        assets:
+          type: array
+          items:
+            type: object
+            properties:
+              asset_id:
+                type: integer
+                example: 14
+              created:
+                type: string
+                example: 2023-07-04T12:00:00.00.000Z
+              tag:
+                type: string
+                example: thumbnail
+              updated:
+                type: string
+                example: 2023-07-04T12:00:00.00.000Z
+              url:
+                type: string
+                example: /images/assets/96070.png
+        created:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        description:
+          type: object
+          properties:
+            brand:
+              type: string
+              example: Chauteau Montelena Winery
+            country:
+              type: string
+              example: USA
+            created:
+              type: string
+              example: 2023-07-04T12:00:00.00.000Z
+            name:
+              type: string
+              example: Chateau Montelena Napa Valley Chardonnay (750 mL)
+            region:
+              type: string
+              example: California
+            size:
+              type: number
+              example: 750
+            style:
+              type: string
+              example: null
+            summary:
+              type: string
+              example: Bright, focused and tightly wound, with tons of citrus peel, orchard fruit and floral notes; terrific energy on the palate with a very long and classy finish. This item is available for Gift Wrap.
+            type:
+              type: string
+              example: Chardonnay
+            units:
+              type: string
+              example: mL
+            updated:
+              type: string
+              example: 2023-07-04T12:00:00.00.000Z
+        inventory:
+          type: array
+          items:
+            type: object
+            properties:
+              created:
+                type: string
+                example: 2023-07-04T12:00:00.00.000Z
+              quantity:
+                type: integer
+                example: 5
+              store:
+                type: object
+                properties:
+                  address:
+                    type: string
+                    example: 636 Blossom Hill Road
+                  city:
+                    type: string
+                    example: Los Gatos
+                  created:
+                    type: string
+                    example: 2023-07-04T12:00:00.00.000Z
+                  latitude:
+                    type: number
+                    example: 37.235477
+                  longitude:
+                    type: number
+                    example: -121.964020
+                  name:
+                    type: string
+                    example: Los Gatos
+                  state:
+                    type: string
+                    example: CA
+                  store_id:
+                    type: integer
+                    example: 6602
+                  updated:
+                    type: string
+                    example: 2023-07-04T12:00:00.00.000Z
+                  zip_code:
+                    type: integer
+                    example: 95032
+              updated:
+                type: string
+                example: 2023-07-04T12:00:00.00.000Z
+        price:
+          type: object
+          properties:
+            created:
+              type: string
+              example: 2023-07-04T12:00:00.00.000Z
+            retail:
+              type: number
+              example: 84.99
+            sale:
+              type: number
+              example: null
+            updated:
+              type: string
+              example: 2023-07-04T12:00:00.00.000Z
+        rating:
+          type: object
+          properties:
+            count:
+              type: integer
+              example: 1
+            created:
+              type: string
+              example: 2023-07-04T12:00:00.00.000Z
+            score:
+              type: number
+              example: 5
+            updated:
+              type: string
+              example: 2023-07-04T12:00:00.00.000Z
+        reviews:
+          type: array
+          items:
+            type: object
+            properties:
+              author:
+                type: string
+                example: Guest
+              created:
+                type: string
+                example: 2023-07-04T12:00:00.00.000Z
+              review_id:
+                type: integer
+                example: 2
+              score:
+                type: number
+                example: 5
+              summary:
+                type: string
+                example: Good, reasonably priced.
+              updated:
+                type: string
+                example: 2023-07-04T12:00:00.00.000Z
+              user_id:
+                type: string
+                example: null
+        sku_id:
+          type: integer
+          example: 96070
+        updated:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+    UpdateProduct:
+      type: object
+      properties:
+        assets:
+          type: array
+          items:
+            type: object
+            required:
+              - asset_id
+            properties:
+              asset_id:
+                type: integer
+                example: 14
+              tag:
+                type: string
+                example: thumbnail
+              url:
+                type: string
+                example: /images/assets/96070.png
+        description:
+          type: object
+          properties:
+            brand:
+              type: string
+              example: Chauteau Montelena Winery
+            country:
+              type: string
+              example: USA
+            name:
+              type: string
+              example: Chateau Montelena Napa Valley Chardonnay (750 mL)
+            region:
+              type: string
+              example: California
+            size:
+              type: number
+              example: 750
+            style:
+              type: string
+              example: null
+            summary:
+              type: string
+              example: Bright, focused and tightly wound, with tons of citrus peel, orchard fruit and floral notes; terrific energy on the palate with a very long and classy finish. This item is available for Gift Wrap.
+            type:
+              type: string
+              example: Chardonnay
+            units:
+              type: string
+              example: mL
+        inventory:
+          type: array
+          items:
+            type: object
+            required:
+              - quantity
+              - store_id
+            properties:
+              quantity:
+                type: integer
+                example: 5
+              store_id:
+                type: integer
+                example: 6602
+        price:
+          type: object
+          properties:
+            retail:
+              type: number
+              example: 84.99
+            sale:
+              type: number
+              example: null
+        rating:
+          type: object
+          properties:
+            count:
+              type: integer
+              example: 0
+            score:
+              type: number
+              example: 0
+    CreateRating:
+      type: object
+      required:
+        - count
+        - score
+      properties:
+        count:
+          type: integer
+          example: 1
+        score:
+          type: number
+          example: 5
+    GetRating:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 1
+        created:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        score:
+          type: number
+          example: 5
+        sku_id:
+          type: integer
+          example: 96070
+        updated:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+    UpdateRating:
+      type: object
+      properties:
+        count:
+          type: number
+          example: 1
+        score:
+          type: number
+          example: 5
+    CreateReview:
+      type: object
+      required:
+        - author
+        - score
+        - summary
+        - user_id
+      properties:
+        author:
+          type: string
+          example: Guest
+        score:
+          type: number
+          example: 5
+        summary:
+          type: string
+          example: Good, reasonably priced.
+        user_id:
+          type: string
+          example: null
+    GetReview:
+      type: object
+      properties:
+        author:
+          type: string
+          example: Guest
+        created:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        review_id:
+          type: integer
+          example: 2
+        score:
+          type: number
+          example: 5
+        sku_id:
+          type: integer
+          example: 96070
+        summary:
+          type: string
+          example: Good, reasonably priced.
+        updated:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        user_id:
+          type: string
+          example: null
+    GetReviews:
+      type: array
+      items:
+        type: object
+        properties:
+          author:
+            type: string
+            example: Guest
+          created:
+            type: string
+            example: 2023-07-04T12:00:00.00.000Z
+          review_id:
+            type: integer
+            example: 2
+          score:
+            type: number
+            example: 5
+          sku_id:
+            type: integer
+            example: 96070
+          summary:
+            type: string
+            example: Good, reasonably priced.
+          updated:
+            type: string
+            example: 2023-07-04T12:00:00.00.000Z
+          user_id:
+            type: string
+            example: null
+    UpdateReview:
+      type: object
+      properties:
+        author:
+          type: string
+          example: Guest
+        score:
+          type: number
+          example: 5
+        summary:
+          type: string
+          example: Good, reasonably priced.
+        user_id:
+          type: string
+          example: null
+    GetSku:
+      type: object
+      properties:
+        created:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        sku_id:
+          type: integer
+          example: 96070
+        updated:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+    GetSkus:
+      type: array
+      items:
+        type: integer
+      example:
+        - 11249
+        - 11251
+        - 28780
+        - 28781
+        - 28782
+        - 65896
+        - 81002
+        - 84992
+        - 85838
+        - 89531
+        - 91158
+        - 95740
+    CreateStore:
+      type: object
+      required:
+        - address
+        - city
+        - latitude
+        - longitude
+        - name
+        - state
+        - zip_code
+      properties:
+        address:
+          type: string
+          example: 1247 West El Camino Real
+        city:
+          type: string
+          example: Sunnyvale
+        latitude:
+          type: number
+          example: 37.375004
+        longitude:
+          type: number
+          example: -122.057389
+        name:
+          type: string
+          example: Sunnyvale
+        state:
+          type: string
+          example: CA
+        zip_code:
+          type: integer
+          example: 94086
+    GetStore:
+      type: object
+      properties:
+        address:
+          type: string
+          example: 1247 West El Camino Real
+        city:
+          type: string
+          example: Sunnyvale
+        created:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        latitude:
+          type: number
+          example: 37.375004
+        longitude:
+          type: number
+          example: -122.057389
+        name:
+          type: string
+          example: Sunnyvale
+        state:
+          type: string
+          example: CA
+        store_id:
+          type: integer
+          example: 3025
+        updated:
+          type: string
+          example: 2023-07-04T12:00:00.00.000Z
+        zip_code:
+          type: integer
+          example: 94086
+    GetStores:
+      type: array
+      items:
+        type: object
+        properties:
+          address:
+            type: string
+            example: 1247 West El Camino Real
+          city:
+            type: string
+            example: Sunnyvale
+          created:
+            type: string
+            example: 2023-07-04T12:00:00.00.000Z
+          latitude:
+            type: number
+            example: 37.375004
+          longitude:
+            type: number
+            example: -122.057389
+          name:
+            type: string
+            example: Sunnyvale
+          state:
+            type: string
+            example: CA
+          store_id:
+            type: integer
+            example: 3025
+          updated:
+            type: string
+            example: 2023-07-04T12:00:00.00.000Z
+          zip_code:
+            type: integer
+            example: 94086
+    UpdateStore:
+      type: object
+      properties:
+        address:
+          type: string
+          example: 1247 West El Camino Real
+        city:
+          type: string
+          example: Sunnyvale
+        latitude:
+          type: number
+          example: 37.375004
+        longitude:
+          type: number
+          example: -122.057389
+        name:
+          type: string
+          example: Sunnyvale
+        state:
+          type: string
+          example: CA
+        zip_code:
+          type: integer
+          example: 94086
+    HttpCode200:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: ok
+    HttpCode201:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 201
+        message:
+          type: string
+          example: created
+    HttpCode400:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: bad request
+    HttpCode404:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: not found
+    HttpCode409:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 409
+        message:
+          type: string
+          example: conflict
+    HttpCode415:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 415
+        message:
+          type: string
+          example: unsupported media type
+    HttpCode500:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 500
+        message:
+          type: string
+          example: internal server error

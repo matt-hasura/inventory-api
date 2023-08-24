@@ -1,0 +1,36 @@
+{
+    "listeners": {
+        "*:80": {
+            "pass": "applications/express"
+        },
+        "*:443": {
+            "pass": "applications/express",
+            "tls": {
+                "certificate": "igraphql.co"
+            }
+        }
+    },
+    
+	"access_log": {
+        "path": "/var/log/unit.log"
+    },
+    
+    "applications": {
+        "express": {
+            "type": "external",
+            "working_directory": "/app/",
+            "executable": "/usr/bin/env",
+            "user": "node",
+            "group": "node",
+            "arguments": [
+                "node",
+                "--no-warnings",
+                "--loader",
+                "unit-http/loader.mjs",
+                "--require",
+                "unit-http/loader",
+                "app.mjs"
+            ]
+        }
+    }
+}

@@ -1,0 +1,312 @@
+version: "3.9"
+
+services:
+  assets:
+    image: igraphql/inventory-microservice:latest
+    container_name: assets
+    hostname: assets
+    restart: always
+    environment:
+      ACCESS_LOG: "false"
+      BASE_PATH: /api/v2
+      DATABASE_TYPE: postgres
+      ENDPOINT_SKUS: https://skus.igraphql.co/api/v2/skus
+      LOG_SQL: "true"
+      MICROSERVICE: assets
+      POSTGRES_DATABASE: asset
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA: public
+      POSTGRES_USERNAME: postgres
+      SERVER_CA: /app/dependencies/ca.pem
+    links:
+      - nginx:skus.igraphql.co
+    networks:
+      - inventory-api
+    ports:
+      - 443
+  
+  description:
+    image: igraphql/inventory-microservice:latest
+    container_name: description
+    hostname: description
+    restart: always
+    environment:
+      ACCESS_LOG: "false"
+      BASE_PATH: /api/v2
+      DATABASE_TYPE: postgres
+      ENDPOINT_SKUS: https://skus.igraphql.co/api/v2/skus
+      LOG_SQL: "true"
+      MICROSERVICE: description
+      POSTGRES_DATABASE: description
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA: public
+      POSTGRES_USERNAME: postgres
+      SERVER_CA: /app/dependencies/ca.pem
+    links:
+      - nginx:skus.igraphql.co
+    networks:
+      - inventory-api
+    ports:
+      - 443
+  
+  inventory:
+    image: igraphql/inventory-microservice:latest
+    container_name: inventory
+    hostname: inventory
+    restart: always
+    environment:
+      ACCESS_LOG: "false"
+      BASE_PATH: /api/v2
+      DATABASE_TYPE: postgres
+      ENDPOINT_SKUS: https://skus.igraphql.co/api/v2/skus
+      ENDPOINT_STORES: https://stores.igraphql.co/api/v2/stores
+      MICROSERVICE: inventory
+      LOG_SQL: "true"
+      POSTGRES_DATABASE: inventory
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA: public
+      POSTGRES_USERNAME: postgres
+      SERVER_CA: /app/dependencies/ca.pem
+    links:
+      - nginx:skus.igraphql.co
+      - nginx:stores.igraphql.co
+    networks:
+      - inventory-api
+    ports:
+      - 443
+  
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    hostname: nginx
+    restart: always
+    networks:
+      - inventory-api
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./source/nginx/certs:/etc/nginx/certs
+      - ./source/nginx/common.conf:/etc/nginx/conf.d/common.conf
+      - ./source/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./source/nginx/nginx.conf:/etc/nginx/nginx.conf
+  
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    hostname: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: pgpassword
+    networks:
+      - inventory-api
+    ports:
+      - 5432:5432
+    volumes:
+      - ./source/init/init.sh:/docker-entrypoint-initdb.d/init.sh
+      - ./source/init/init.sql:/var/tmp/init.sql
+      - postgres:/var/lib/postgresql/data
+  
+  price:
+    image: igraphql/inventory-microservice:latest
+    container_name: price
+    hostname: price
+    restart: always
+    environment:
+      ACCESS_LOG: "false"
+      BASE_PATH: /api/v2
+      DATABASE_TYPE: postgres
+      ENDPOINT_SKUS: https://skus.igraphql.co/api/v2/skus
+      LOG_SQL: "true"
+      MICROSERVICE: price
+      POSTGRES_DATABASE: price
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA: public
+      POSTGRES_USERNAME: postgres
+      SERVER_CA: /app/dependencies/ca.pem
+    links:
+      - nginx:skus.igraphql.co
+    networks:
+      - inventory-api
+    ports:
+      - 443
+  
+  products:
+    image: igraphql/inventory-microservice:latest
+    container_name: products
+    hostname: products
+    restart: always
+    environment:
+      ACCESS_LOG: "false"
+      BASE_PATH: /api/v2
+      DATABASE_TYPE: postgres
+      ENDPOINT_ASSETS: https://assets.igraphql.co/api/v2/assets
+      ENDPOINT_DESCRIPTION: https://description.igraphql.co/api/v2/description
+      ENDPOINT_INVENTORY: https://inventory.igraphql.co/api/v2/inventory
+      ENDPOINT_PRICE: https://price.igraphql.co/api/v2/price
+      ENDPOINT_RATING: https://rating.igraphql.co/api/v2/rating
+      ENDPOINT_REVIEWS: https://reviews.igraphql.co/api/v2/reviews
+      ENDPOINT_SKUS: https://skus.igraphql.co/api/v2/skus
+      LOG_SQL: "true"
+      MICROSERVICE: products
+      SERVER_CA: /app/dependencies/ca.pem
+    links:
+      - nginx:assets.igraphql.co
+      - nginx:description.igraphql.co
+      - nginx:inventory.igraphql.co
+      - nginx:price.igraphql.co
+      - nginx:rating.igraphql.co
+      - nginx:reviews.igraphql.co
+      - nginx:skus.igraphql.co
+    networks:
+      - inventory-api
+    ports:
+      - 443
+  
+  rating:
+    image: igraphql/inventory-microservice:latest
+    container_name: rating
+    hostname: rating
+    restart: always
+    environment:
+      ACCESS_LOG: "false"
+      BASE_PATH: /api/v2
+      DATABASE_TYPE: postgres
+      ENDPOINT_REVIEWS: https://reviews.igraphql.co/api/v2/reviews
+      ENDPOINT_SKUS: https://skus.igraphql.co/api/v2/skus
+      LOG_SQL: "true"
+      MICROSERVICE: rating
+      POSTGRES_DATABASE: rating
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA: public
+      POSTGRES_USERNAME: postgres
+      SERVER_CA: /app/dependencies/ca.pem
+    links:
+      - nginx:reviews.igraphql.co
+      - nginx:skus.igraphql.co
+    networks:
+      - inventory-api
+    ports:
+      - 443
+  
+  reviews:
+    image: igraphql/inventory-microservice:latest
+    container_name: reviews
+    hostname: reviews
+    restart: always
+    environment:
+      ACCESS_LOG: "false"
+      BASE_PATH: /api/v2
+      DATABASE_TYPE: postgres
+      ENDPOINT_RATING: https://rating.igraphql.co/api/v2/rating
+      ENDPOINT_SKUS: https://skus.igraphql.co/api/v2/skus
+      LOG_SQL: "true"
+      MICROSERVICE: reviews
+      POSTGRES_DATABASE: review
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA: public
+      POSTGRES_USERNAME: postgres
+      SERVER_CA: /app/dependencies/ca.pem
+    links:
+      - nginx:rating.igraphql.co
+      - nginx:skus.igraphql.co
+    networks:
+      - inventory-api
+    ports:
+      - 443
+  
+  skus:
+    image: igraphql/inventory-microservice:latest
+    container_name: skus
+    hostname: skus
+    restart: always
+    environment:
+      ACCESS_LOG: "false"
+      BASE_PATH: /api/v2
+      DATABASE_TYPE: postgres
+      ENDPOINT_ASSETS: https://assets.igraphql.co/api/v2/assets
+      ENDPOINT_DESCRIPTION: https://description.igraphql.co/api/v2/description
+      ENDPOINT_INVENTORY: https://inventory.igraphql.co/api/v2/inventory
+      ENDPOINT_PRICE: https://price.igraphql.co/api/v2/price
+      ENDPOINT_RATING: https://rating.igraphql.co/api/v2/rating
+      ENDPOINT_REVIEWS: https://reviews.igraphql.co/api/v2/reviews
+      LOG_SQL: "true"
+      MICROSERVICE: skus
+      POSTGRES_DATABASE: sku
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA: public
+      POSTGRES_USERNAME: postgres
+      SERVER_CA: /app/dependencies/ca.pem
+    links:
+      - nginx:assets.igraphql.co
+      - nginx:description.igraphql.co
+      - nginx:inventory.igraphql.co
+      - nginx:price.igraphql.co
+      - nginx:rating.igraphql.co
+      - nginx:reviews.igraphql.co
+    networks:
+      - inventory-api
+    ports:
+      - 443
+  
+  stores:
+    image: igraphql/inventory-microservice:latest
+    container_name: stores
+    hostname: stores
+    restart: always
+    environment:
+      ACCESS_LOG: "false"
+      BASE_PATH: /api/v2
+      DATABASE_TYPE: postgres
+      ENDPOINT_INVENTORY: https://inventory.igraphql.co/api/v2/inventory
+      LOG_SQL: "true"
+      MICROSERVICE: stores
+      POSTGRES_DATABASE: store
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_PORT: 5432
+      POSTGRES_SCHEMA: public
+      POSTGRES_USERNAME: postgres
+      SERVER_CA: /app/dependencies/ca.pem
+    links:
+      - nginx:inventory.igraphql.co
+    networks:
+      - inventory-api
+    ports:
+      - 443
+  
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    container_name: swagger-ui
+    hostname: swagger-ui
+    restart: always
+    environment:
+      SWAGGER_JSON: /swagger.yaml
+    networks:
+      - inventory-api
+    ports:
+      - 8080
+    volumes:
+      - ./source/swagger/swagger.yaml:/swagger.yaml
+
+networks:
+  inventory-api:
+    name: inventory-api
+
+volumes:
+  postgres:
+    name: postgres
